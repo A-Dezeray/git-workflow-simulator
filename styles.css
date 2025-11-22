@@ -1,0 +1,651 @@
+/* ===== CSS Variables ===== */
+:root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --border-color: #30363d;
+    --text-primary: #f0f6fc;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+
+    /* Branch colors */
+    --color-main: #58a6ff;
+    --color-branch-1: #a371f7;
+    --color-branch-2: #3fb950;
+    --color-branch-3: #f78166;
+    --color-branch-4: #d29922;
+    --color-branch-5: #db61a2;
+
+    /* UI colors */
+    --color-success: #3fb950;
+    --color-warning: #d29922;
+    --color-danger: #f85149;
+    --color-info: #58a6ff;
+
+    /* Sizing */
+    --node-radius: 16;
+    --node-spacing-x: 100;
+    --node-spacing-y: 60;
+
+    /* Animation */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 400ms ease;
+}
+
+/* ===== Reset & Base ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* ===== App Container ===== */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+/* ===== Header ===== */
+.header {
+    padding: 1.5rem 2rem;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(135deg, var(--color-main), var(--color-branch-1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ===== Control Panel ===== */
+.control-panel {
+    width: 260px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+}
+
+.panel-section h3 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+/* ===== Buttons ===== */
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-bottom: 0.5rem;
+}
+
+.btn:hover {
+    background: var(--border-color);
+    border-color: var(--text-muted);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-icon {
+    font-size: 1.1rem;
+    width: 1.25rem;
+    text-align: center;
+}
+
+.btn-commit {
+    background: rgba(63, 185, 80, 0.15);
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+.btn-commit:hover {
+    background: rgba(63, 185, 80, 0.25);
+}
+
+.btn-branch {
+    background: rgba(163, 113, 247, 0.15);
+    border-color: var(--color-branch-1);
+    color: var(--color-branch-1);
+}
+
+.btn-branch:hover {
+    background: rgba(163, 113, 247, 0.25);
+}
+
+.btn-merge {
+    background: rgba(88, 166, 255, 0.15);
+    border-color: var(--color-info);
+    color: var(--color-info);
+}
+
+.btn-merge:hover {
+    background: rgba(88, 166, 255, 0.25);
+}
+
+.btn-checkout {
+    background: rgba(210, 153, 34, 0.15);
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.btn-checkout:hover {
+    background: rgba(210, 153, 34, 0.25);
+}
+
+.btn-secondary {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+.btn-danger {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+    background: rgba(248, 81, 73, 0.1);
+}
+
+.btn-danger:hover {
+    background: rgba(248, 81, 73, 0.2);
+}
+
+/* ===== State Info ===== */
+.state-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.state-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.state-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.state-value {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.head-badge {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    background: rgba(88, 166, 255, 0.2);
+    border: 1px solid var(--color-main);
+    border-radius: 4px;
+    color: var(--color-main);
+    font-weight: 500;
+}
+
+.branch-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}
+
+.branch-tag {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-secondary);
+}
+
+.branch-tag.active {
+    background: rgba(88, 166, 255, 0.15);
+    border-color: var(--color-main);
+    color: var(--color-main);
+}
+
+/* ===== Visualization Area ===== */
+.visualization-area {
+    flex: 1;
+    background: var(--bg-primary);
+    position: relative;
+    overflow: auto;
+}
+
+.git-graph {
+    width: 100%;
+    height: 100%;
+    min-width: 800px;
+    min-height: 500px;
+}
+
+/* ===== SVG Styles ===== */
+.commit-node {
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.commit-node:hover .node-circle {
+    filter: brightness(1.2);
+}
+
+.commit-node:hover .node-glow {
+    opacity: 0.6;
+}
+
+.node-circle {
+    transition: all var(--transition-fast);
+}
+
+.node-glow {
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.node-label {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 10px;
+    fill: var(--text-secondary);
+    pointer-events: none;
+}
+
+.branch-line {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.branch-label {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.branch-label-bg {
+    rx: 4;
+    ry: 4;
+}
+
+.head-indicator {
+    font-size: 10px;
+    font-weight: 700;
+    fill: var(--color-warning);
+}
+
+/* Commit node animations */
+.commit-node.new-commit {
+    animation: nodeAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes nodeAppear {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.commit-node.head .node-circle {
+    stroke-width: 3;
+    stroke: var(--color-warning);
+}
+
+.commit-node.conflict .node-circle {
+    animation: conflictPulse 1s ease-in-out infinite;
+}
+
+@keyframes conflictPulse {
+    0%, 100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.5) drop-shadow(0 0 8px var(--color-danger));
+    }
+}
+
+/* Merge animation */
+.merge-line {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawLine 0.5s ease forwards;
+}
+
+@keyframes drawLine {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* ===== Explanation Panel ===== */
+.explanation-panel {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+}
+
+.explanation-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.explanation-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.explanation-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.explanation-text strong {
+    color: var(--text-primary);
+}
+
+.explanation-text code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    background: var(--bg-tertiary);
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--color-main);
+}
+
+/* ===== Modal ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    animation: fadeIn var(--transition-fast);
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 360px;
+    animation: modalSlide var(--transition-normal) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-wide {
+    max-width: 550px;
+}
+
+@keyframes modalSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal h3 {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+}
+
+.modal-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.modal input[type="text"] {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    margin-bottom: 1rem;
+    transition: border-color var(--transition-fast);
+}
+
+.modal input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-main);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.modal-buttons .btn {
+    width: auto;
+    margin-bottom: 0;
+}
+
+/* ===== Merge Options ===== */
+.merge-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.merge-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.merge-option:hover {
+    border-color: var(--color-main);
+    background: rgba(88, 166, 255, 0.1);
+}
+
+.merge-option-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.merge-option-name {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.875rem;
+}
+
+/* ===== Conflict Display ===== */
+.conflict-display {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.conflict-section {
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.conflict-header {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.conflict-header.current {
+    background: rgba(63, 185, 80, 0.2);
+    color: var(--color-success);
+}
+
+.conflict-header.incoming {
+    background: rgba(88, 166, 255, 0.2);
+    color: var(--color-info);
+}
+
+.conflict-code {
+    padding: 0.75rem;
+    background: var(--bg-tertiary);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    margin: 0;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+}
+
+.conflict-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.conflict-buttons .btn {
+    flex: 1;
+    min-width: 120px;
+    margin-bottom: 0;
+    justify-content: center;
+}
+
+/* ===== Tooltip ===== */
+.tooltip {
+    position: absolute;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    animation: tooltipFade var(--transition-fast);
+    max-width: 250px;
+}
+
+@keyframes tooltipFade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tooltip-hash {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--color-main);
+    margin-bottom: 0.25rem;
+}
+
+.tooltip-message {
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.tooltip-meta {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+
+    .control-panel {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .panel-section {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .panel-section h3 {
+        margin-bottom: 0.5rem;
+    }
+
+    .btn {
+        margin-bottom: 0.375rem;
+    }
+}

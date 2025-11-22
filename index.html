@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Workflow Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Git Workflow Simulator</h1>
+            <p class="subtitle">Learn Git visually - create branches, commits, and see how merging works</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Control Panel -->
+            <aside class="control-panel">
+                <div class="panel-section">
+                    <h3>Actions</h3>
+                    <button id="btn-commit" class="btn btn-commit">
+                        <span class="btn-icon">+</span>
+                        New Commit
+                    </button>
+                    <button id="btn-branch" class="btn btn-branch">
+                        <span class="btn-icon">⑂</span>
+                        New Branch
+                    </button>
+                    <button id="btn-merge" class="btn btn-merge">
+                        <span class="btn-icon">⤙</span>
+                        Merge Branch
+                    </button>
+                    <button id="btn-checkout" class="btn btn-checkout">
+                        <span class="btn-icon">→</span>
+                        Switch Branch
+                    </button>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Current State</h3>
+                    <div class="state-info">
+                        <div class="state-item">
+                            <span class="state-label">HEAD:</span>
+                            <span id="current-head" class="state-value head-badge">main</span>
+                        </div>
+                        <div class="state-item">
+                            <span class="state-label">Branches:</span>
+                            <div id="branch-list" class="branch-list">
+                                <span class="branch-tag active">main</span>
+                            </div>
+                        </div>
+                        <div class="state-item">
+                            <span class="state-label">Commits:</span>
+                            <span id="commit-count" class="state-value">1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Scenarios</h3>
+                    <button id="btn-reset" class="btn btn-secondary">
+                        Reset All
+                    </button>
+                    <button id="btn-demo-conflict" class="btn btn-secondary btn-danger">
+                        Demo Conflict
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Visualization Area -->
+            <main class="visualization-area">
+                <svg id="git-graph" class="git-graph">
+                    <!-- Graph will be rendered here -->
+                </svg>
+            </main>
+        </div>
+
+        <!-- Explanation Panel -->
+        <footer class="explanation-panel">
+            <div id="explanation-content" class="explanation-content">
+                <div class="explanation-icon">💡</div>
+                <div class="explanation-text">
+                    <strong>Welcome!</strong> Click "New Commit" to add your first commit, or "New Branch" to create a feature branch.
+                    Hover over nodes to see commit details.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal for branch name input -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <h3 id="modal-title">Create New Branch</h3>
+            <input type="text" id="modal-input" placeholder="Enter branch name..." autocomplete="off">
+            <div class="modal-buttons">
+                <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="modal-confirm" class="btn btn-commit">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for merge selection -->
+    <div id="merge-modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <h3>Merge Branch</h3>
+            <p class="modal-description">Select a branch to merge into <strong id="merge-target"></strong>:</p>
+            <div id="merge-branch-options" class="merge-options">
+                <!-- Branch options will be inserted here -->
+            </div>
+            <div class="modal-buttons">
+                <button id="merge-modal-cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for checkout/switch branch -->
+    <div id="checkout-modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <h3>Switch Branch</h3>
+            <p class="modal-description">Select a branch to switch to:</p>
+            <div id="checkout-branch-options" class="merge-options">
+                <!-- Branch options will be inserted here -->
+            </div>
+            <div class="modal-buttons">
+                <button id="checkout-modal-cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conflict Resolution Modal -->
+    <div id="conflict-modal-overlay" class="modal-overlay hidden">
+        <div class="modal modal-wide">
+            <h3>⚠️ Merge Conflict!</h3>
+            <p class="modal-description">Both branches modified the same code. Choose how to resolve:</p>
+            <div class="conflict-display">
+                <div class="conflict-section">
+                    <div class="conflict-header current">Current Branch (<span id="conflict-current-branch"></span>)</div>
+                    <pre id="conflict-current-code" class="conflict-code"></pre>
+                </div>
+                <div class="conflict-section">
+                    <div class="conflict-header incoming">Incoming Branch (<span id="conflict-incoming-branch"></span>)</div>
+                    <pre id="conflict-incoming-code" class="conflict-code"></pre>
+                </div>
+            </div>
+            <div class="conflict-buttons">
+                <button id="conflict-accept-current" class="btn btn-secondary">Accept Current</button>
+                <button id="conflict-accept-incoming" class="btn btn-secondary">Accept Incoming</button>
+                <button id="conflict-accept-both" class="btn btn-commit">Accept Both</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
