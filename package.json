@@ -1,0 +1,19 @@
+{
+    "name": "git-workflow-simulator",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "description": "An interactive visual simulator for learning Git workflows, branching, merging, rebasing, and more.",
+    "scripts": {
+        "start": "npx http-server . -p 3000 -o",
+        "dev": "npx http-server . -p 3000 -o -c-1"
+    },
+    "keywords": [
+        "git",
+        "simulator",
+        "learning",
+        "visualization",
+        "education"
+    ],
+    "license": "MIT"
+}

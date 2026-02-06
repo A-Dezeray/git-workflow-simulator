@@ -8,33 +8,36 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
         <header class="header">
             <h1>Git Workflow Simulator</h1>
-            <p class="subtitle">Learn Git visually - create branches, commits, and see how merging works</p>
+            <span class="subtitle">Learn Git visually</span>
         </header>
 
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Control Panel -->
             <aside class="control-panel">
+                <div id="status-message" class="status-message hidden"></div>
+
                 <div class="panel-section">
                     <h3>Actions</h3>
-                    <button id="btn-commit" class="btn btn-commit">
-                        <span class="btn-icon">+</span>
-                        New Commit
+                    <button id="btn-commit" class="btn btn-commit">New Commit</button>
+                    <button id="btn-branch" class="btn btn-branch">New Branch</button>
+                    <button id="btn-merge" class="btn btn-merge">Merge</button>
+                    <button id="btn-checkout" class="btn btn-checkout">Switch Branch</button>
+                    <button id="btn-rebase" class="btn btn-secondary">
+                        Rebase
                     </button>
-                    <button id="btn-branch" class="btn btn-branch">
-                        <span class="btn-icon">⑂</span>
-                        New Branch
+                    <button id="btn-cherry-pick" class="btn btn-secondary">
+                        Cherry-pick
                     </button>
-                    <button id="btn-merge" class="btn btn-merge">
-                        <span class="btn-icon">⤙</span>
-                        Merge Branch
+                </div>
+
+                <div class="panel-section">
+                    <h3>History</h3>
+                    <button id="btn-undo" class="btn btn-secondary">
+                        Undo
                     </button>
-                    <button id="btn-checkout" class="btn btn-checkout">
-                        <span class="btn-icon">→</span>
-                        Switch Branch
+                    <button id="btn-redo" class="btn btn-secondary">
+                        Redo
                     </button>
                 </div>
 
@@ -55,7 +58,70 @@
                             <span class="state-label">Commits:</span>
                             <span id="commit-count" class="state-value">1</span>
                         </div>
+                        <div class="state-item">
+                            <span class="state-label">Stash:</span>
+                            <span id="stash-count" class="state-value">0</span>
+                        </div>
                     </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Stash</h3>
+                    <button id="btn-stash-save" class="btn btn-secondary">
+                        Stash Save
+                    </button>
+                    <button id="btn-stash-apply" class="btn btn-secondary">
+                        Stash Apply
+                    </button>
+                    <button id="btn-stash-pop" class="btn btn-secondary">
+                        Stash Pop
+                    </button>
+                    <button id="btn-stash-drop" class="btn btn-secondary">
+                        Stash Drop
+                    </button>
+                    <div id="stash-list" class="stash-list"></div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Remote</h3>
+                    <div class="state-info">
+                        <div class="state-item">
+                            <span class="state-label">Remote Branches:</span>
+                            <div id="remote-branch-list" class="branch-list"></div>
+                        </div>
+                        <div class="state-item">
+                            <span class="state-label">Remote Commits:</span>
+                            <span id="remote-commit-count" class="state-value">1</span>
+                        </div>
+                    </div>
+                    <button id="btn-fetch" class="btn btn-secondary">
+                        Fetch
+                    </button>
+                    <button id="btn-pull" class="btn btn-secondary">
+                        Pull
+                    </button>
+                    <button id="btn-push" class="btn btn-secondary">
+                        Push
+                    </button>
+                    <button id="btn-remote-commit" class="btn btn-secondary">
+                        Simulate Remote Commit
+                    </button>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Tutorial</h3>
+                    <select id="tutorial-select" class="tutorial-select"></select>
+                    <div class="tutorial-buttons">
+                        <button id="btn-start-tutorial" class="btn btn-secondary">Start</button>
+                        <button id="btn-stop-tutorial" class="btn btn-secondary">Stop</button>
+                    </div>
+                    <div id="tutorial-status" class="tutorial-status">No tutorial active.</div>
+                    <ul id="tutorial-steps" class="tutorial-steps"></ul>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Shortcuts</h3>
+                    <ul id="shortcut-list" class="shortcut-list"></ul>
                 </div>
 
                 <div class="panel-section">
@@ -69,31 +135,32 @@
                 </div>
             </aside>
 
-            <!-- Visualization Area -->
             <main class="visualization-area">
                 <svg id="git-graph" class="git-graph">
-                    <!-- Graph will be rendered here -->
                 </svg>
             </main>
         </div>
 
-        <!-- Explanation Panel -->
         <footer class="explanation-panel">
             <div id="explanation-content" class="explanation-content">
-                <div class="explanation-icon">💡</div>
+                <div class="explanation-icon">TIP</div>
                 <div class="explanation-text">
                     <strong>Welcome!</strong> Click "New Commit" to add your first commit, or "New Branch" to create a feature branch.
                     Hover over nodes to see commit details.
                 </div>
             </div>
+            <div class="command-panel">
+                <div class="command-label">Equivalent command</div>
+                <div id="command-output" class="command-output"><code>git status</code></div>
+            </div>
         </footer>
     </div>
 
-    <!-- Modal for branch name input -->
     <div id="modal-overlay" class="modal-overlay hidden">
         <div class="modal">
             <h3 id="modal-title">Create New Branch</h3>
             <input type="text" id="modal-input" placeholder="Enter branch name..." autocomplete="off">
+            <div id="modal-error" class="modal-error"></div>
             <div class="modal-buttons">
                 <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
                 <button id="modal-confirm" class="btn btn-commit">Create</button>
@@ -101,38 +168,66 @@
         </div>
     </div>
 
-    <!-- Modal for merge selection -->
     <div id="merge-modal-overlay" class="modal-overlay hidden">
         <div class="modal">
             <h3>Merge Branch</h3>
             <p class="modal-description">Select a branch to merge into <strong id="merge-target"></strong>:</p>
-            <div id="merge-branch-options" class="merge-options">
-                <!-- Branch options will be inserted here -->
-            </div>
+            <div id="merge-branch-options" class="merge-options"></div>
             <div class="modal-buttons">
                 <button id="merge-modal-cancel" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal for checkout/switch branch -->
     <div id="checkout-modal-overlay" class="modal-overlay hidden">
         <div class="modal">
             <h3>Switch Branch</h3>
             <p class="modal-description">Select a branch to switch to:</p>
-            <div id="checkout-branch-options" class="merge-options">
-                <!-- Branch options will be inserted here -->
-            </div>
+            <div id="checkout-branch-options" class="merge-options"></div>
             <div class="modal-buttons">
                 <button id="checkout-modal-cancel" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- Conflict Resolution Modal -->
+    <div id="rebase-modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <h3>Rebase Branch</h3>
+            <p class="modal-description">Select a branch to rebase onto:</p>
+            <div id="rebase-branch-options" class="merge-options"></div>
+            <div class="modal-buttons">
+                <button id="rebase-modal-cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cherry-pick-modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <h3>Cherry-pick Commit</h3>
+            <p class="modal-description">Select a branch and commit to cherry-pick:</p>
+            <select id="cherry-pick-branch-select" class="tutorial-select"></select>
+            <div id="cherry-pick-commit-list" class="commit-list"></div>
+            <div class="modal-buttons">
+                <button id="cherry-pick-modal-cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="stash-modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <h3>Stash Changes</h3>
+            <p class="modal-description">Add a message for this stash:</p>
+            <input type="text" id="stash-input" placeholder="WIP: quick fix..." autocomplete="off">
+            <div class="modal-buttons">
+                <button id="stash-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="stash-confirm" class="btn btn-commit">Save</button>
+            </div>
+        </div>
+    </div>
+
     <div id="conflict-modal-overlay" class="modal-overlay hidden">
         <div class="modal modal-wide">
-            <h3>⚠️ Merge Conflict!</h3>
+            <h3>Merge Conflict</h3>
             <p class="modal-description">Both branches modified the same code. Choose how to resolve:</p>
             <div class="conflict-display">
                 <div class="conflict-section">
@@ -152,6 +247,6 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
