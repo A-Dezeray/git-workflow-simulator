@@ -72,7 +72,11 @@ export class Renderer {
             return;
         }
         const maxX = Math.max(...state.commits.map((c) => c.x)) + 160;
-        const maxY = Math.max(...state.commits.map((c) => c.y)) + 80;
+        const maxCommitY = Math.max(...state.commits.map((c) => c.y));
+        // Also account for branch rows that may not have commits yet
+        const maxBranchRow = Math.max(...Object.values(state.branches).map((b) => b.row));
+        const maxBranchY = CONFIG.startY + maxBranchRow * CONFIG.nodeSpacingY;
+        const maxY = Math.max(maxCommitY, maxBranchY) + 80;
         const width = Math.max(800, maxX);
         const height = Math.max(500, maxY);
         this.svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
@@ -104,14 +108,16 @@ export class Renderer {
                 if (parent.row === commit.row) {
                     d = `M ${parent.x} ${parent.y} L ${commit.x} ${commit.y}`;
                 } else if (isMergeConnection) {
+                    // Merge: curve right from source branch up/down to merge commit
                     d = `M ${parent.x} ${parent.y}
-                         C ${parent.x + 40} ${parent.y},
-                           ${commit.x - 40} ${commit.y},
+                         C ${commit.x} ${parent.y},
+                           ${parent.x} ${commit.y},
                            ${commit.x} ${commit.y}`;
                 } else {
+                    // Branch fork: curve right and down from parent to commit
                     d = `M ${parent.x} ${parent.y}
-                         C ${parent.x + 30} ${parent.y},
-                           ${parent.x + 30} ${commit.y},
+                         C ${commit.x} ${parent.y},
+                           ${parent.x} ${commit.y},
                            ${commit.x} ${commit.y}`;
                 }
 
@@ -150,8 +156,37 @@ export class Renderer {
             }
 
             const g = createSvgElement('g');
+
+            // If the head commit is on a different row (branch was just created,
+            // sharing the parent's commit), position the label on the branch's own row
+            const branchY = CONFIG.startY + branch.row * CONFIG.nodeSpacingY;
             const labelX = headCommit.x + CONFIG.nodeRadius + 10;
-            const labelY = headCommit.y;
+            const labelY = branchY;
+
+            // Draw a fork indicator line from the shared commit down to this branch's row
+            if (headCommit.row !== branch.row) {
+                const forkLine = createSvgElement('path');
+                const endX = headCommit.x + CONFIG.nodeSpacingX * 0.6;
+                const d = `M ${headCommit.x} ${headCommit.y}
+                           C ${endX} ${headCommit.y},
+                             ${headCommit.x} ${branchY},
+                             ${endX} ${branchY}`;
+                forkLine.setAttribute('d', d);
+                forkLine.setAttribute('class', 'branch-line');
+                forkLine.setAttribute('stroke', branch.color);
+                forkLine.setAttribute('stroke-opacity', '0.4');
+                forkLine.setAttribute('stroke-dasharray', '4,4');
+                g.appendChild(forkLine);
+
+                // Draw a small dot at the branch's row to indicate the fork point
+                const dot = createSvgElement('circle');
+                dot.setAttribute('cx', endX);
+                dot.setAttribute('cy', branchY);
+                dot.setAttribute('r', 5);
+                dot.setAttribute('fill', branch.color);
+                dot.setAttribute('fill-opacity', '0.5');
+                g.appendChild(dot);
+            }
 
             const text = createSvgElement('text');
             text.setAttribute('x', labelX);

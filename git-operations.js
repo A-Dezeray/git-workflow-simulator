@@ -87,9 +87,31 @@ function getNextCol(commits) {
     return getMaxCol(commits) + 1;
 }
 
+function getNextColForRow(commits, row, minCol) {
+    // Find the max column used by commits on this row, then go one past it
+    const rowCommits = commits.filter((c) => c.row === row);
+    if (rowCommits.length === 0) {
+        return minCol;
+    }
+    const maxRowCol = Math.max(...rowCommits.map((c) => c.col || 0));
+    return Math.max(maxRowCol + 1, minCol);
+}
+
 function createCommitOnBranch(state, branchName, { message, isMerge = false, mergeSource, parents }) {
     const branch = state.branches[branchName];
-    const col = getNextCol(state.commits);
+
+    // Determine column: place commit after the last commit on this branch's row,
+    // but ensure it's at least one column past any parent commit
+    let minCol = 0;
+    if (parents && parents.length > 0) {
+        parents.forEach((parentId) => {
+            const parent = getCommitById(state.commits, parentId);
+            if (parent) {
+                minCol = Math.max(minCol, parent.col + 1);
+            }
+        });
+    }
+    const col = getNextColForRow(state.commits, branch.row, minCol);
     const position = createPosition(col, branch.row);
 
     const commit = {
@@ -165,8 +187,16 @@ function importRemoteCommits(draft, remoteHeadId, branchName) {
     }
 
     ordered.forEach((remoteCommit) => {
-        const col = getNextCol(draft.commits);
-        const position = createPosition(col, draft.branches[branchName].row);
+        let minCol = 0;
+        remoteCommit.parents.forEach((parentId) => {
+            const parent = getCommitById(draft.commits, parentId);
+            if (parent) {
+                minCol = Math.max(minCol, parent.col + 1);
+            }
+        });
+        const branchRow = draft.branches[branchName].row;
+        const col = getNextColForRow(draft.commits, branchRow, minCol);
+        const position = createPosition(col, branchRow);
         draft.commits.push({
             id: remoteCommit.id,
             message: remoteCommit.message,
@@ -232,13 +262,18 @@ export class GitOperations {
             const newRow = Object.keys(draft.branches).length;
             const color = CONFIG.branchColors[newRow % CONFIG.branchColors.length];
 
+            // Find the fork point commit to record its column
+            const forkCommit = getCommitById(draft.commits, currentHead);
+            const forkCol = forkCommit ? forkCommit.col : 0;
+
             draft.branches[branchName] = {
                 name: branchName,
                 head: currentHead,
                 color,
                 row: newRow,
                 createdFrom: draft.currentBranch,
-                createdAt: currentHead
+                createdAt: currentHead,
+                forkCol
             };
             draft.branchCounter += 1;
             draft.currentBranch = branchName;
